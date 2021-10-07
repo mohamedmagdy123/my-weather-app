@@ -6,37 +6,32 @@ let d = new Date();
 let newDate = d.getMonth() + "." + d.getDate() + "." + d.getFullYear();
 
 const generate = document.getElementById("generate");
-console.log("1");
 generate.addEventListener(
   "click",
   () => {
     const ZIP = document.getElementById("zip").value;
     const feelings = document.getElementById("feelings").value;
-    console.log(`${myURL}${ZIP}${key}`);
     getData(myURL, ZIP, key).then(function (data) {
-      console.log(data);
       postData("/all", {
         temprature: data.main.temp,
         date: d,
-        userResonse: feelings,
-      });
+        userResponse: feelings,
+      }).then(updateUI());
     });
   },
   false
 );
 const getData = async (URL, ZIP, key) => {
-  console.log(ZIP);
   const res = await fetch(URL + ZIP + key);
   try {
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.log("error", error);
   }
 };
 const postData = async (url = "", data = {}) => {
-  const response = await fetch(url, {
+  const res = await fetch(url, {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -44,10 +39,23 @@ const postData = async (url = "", data = {}) => {
     },
     body: JSON.stringify(data),
   });
-
   try {
-    const newData = await response.json();
+    const newData = await res.json();
     return newData;
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+const updateUI = async () => {
+  const req = await fetch("/all");
+  try {
+    const allData = await req.json();
+    document.getElementById("date").innerHTML =
+      allData[allData.length - 1].date;
+    document.getElementById("temp").innerHTML =
+      allData[allData.length - 1].temprature;
+    document.getElementById("content").innerHTML =
+      allData[allData.length - 1].feelings;
   } catch (error) {
     console.log("error", error);
   }
