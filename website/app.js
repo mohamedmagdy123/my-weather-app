@@ -1,6 +1,6 @@
 /* Global Variables */
 const myURL = "http://api.openweathermap.org/data/2.5/weather?zip=";
-const key = ",us&appid=4b4a59a39a11d061c8956e9f48f72dfd";
+const key = ",us&units=metric&appid=4b4a59a39a11d061c8956e9f48f72dfd";
 // Create a new date instance dynamically with JS
 let d = new Date();
 let newDate = d.getMonth() + "." + d.getDate() + "." + d.getFullYear();
@@ -25,12 +25,13 @@ const getData = async (URL, ZIP, key) => {
   const res = await fetch(URL + ZIP + key);
   try {
     const data = await res.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.log("error", error);
   }
 };
-const postData = async (url = "", data = {}) => {
+const postData = async (url="", data = {}) => {
   const res = await fetch(url, {
     method: "POST",
     credentials: "same-origin",
@@ -46,17 +47,27 @@ const postData = async (url = "", data = {}) => {
     console.log("error", error);
   }
 };
-const updateUI = async () => {
-  const req = await fetch("/all");
-  try {
-    const allData = await req.json();
-    document.getElementById("date").innerHTML =
-      allData[allData.length - 1].date;
-    document.getElementById("temp").innerHTML =
-      allData[allData.length - 1].temprature;
-    document.getElementById("content").innerHTML =
-      allData[allData.length - 1].feelings;
-  } catch (error) {
-    console.log("error", error);
+const updateUI = async()=>{
+  const request = await fetch('/all')
+  try{
+  const allData = await request.json();
+  console.log(allData)
+  document.getElementById('date').innerHTML = `Date:${allData.date}`;
+  document.getElementById('temp').innerHTML = `Temperature:${allData.temp}`;
+  document.getElementById('content').innerHTML = `I feel:${allData.content}`;
+  }catch(err){
+  console.log('error',err);
   }
-};
+  }
+// const updateUI = async () => {
+//   const req = await fetch("/all");
+//   try {
+//     const allData = await req.json();
+//     console.log(allData);
+//     document.getElementById("date").innerHTML = `Date: ${allData.date}`;
+//     document.getElementById("temp").innerHTML = `Temperature:${allData.temprature}`;
+//     document.getElementById("content").innerHTML = `I feel:${allData.feelings}`;
+//   } catch (error) {
+//     console.log("error", error);
+//   }
+// };
